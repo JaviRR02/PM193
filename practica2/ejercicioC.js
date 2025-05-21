@@ -12,6 +12,12 @@ personas.forEach(persona => {
     console.log(`El nombre de la persona es ${persona.nombre} y su edad es ${persona.edad}`);
 });
 
-const sumaEdades = personas.reduce((acumulador, persona) => acumulador + persona.edad, 0);
+// const sumaEdades = personas.reduce((acumulador, persona) => acumulador + persona.edad, 0);
+// console.log(`La suma de las edades es ${sumaEdades}`);
+// Salida: La suma de las edades es 85
+
+const edades = personas.map(persona => persona.edad);
+
+const sumaEdades = edades.reduce((acumulador, edad) => acumulador + edad);
 console.log(`La suma de las edades es ${sumaEdades}`);
 // Salida: La suma de las edades es 85
