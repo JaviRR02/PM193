@@ -12,6 +12,13 @@ const Texto = () => {
   )
 }
 
+const Boton = () => {
+  const [texto,setTexto]=useState('Presionar');
+  const cambiarTexto=()=>{setTexto('Presionado')};
+  return (
+    <Button onPress={cambiarTexto} title={texto}></Button>
+  )
+}
 
 
 export default function App() {
@@ -21,7 +28,7 @@ export default function App() {
       <Texto> </Texto>
       <Texto> </Texto>
       <Texto> </Texto>
-      <Button  title='Presionar'></Button>
+      <Boton> </Boton>
       <StatusBar style='auto'/>
 
     </View>
