@@ -12,14 +12,16 @@ const Texto = () => {
   )
 }
 
+
+
 export default function App() {
   return (
     <View style={styles.container}>
 
-      <Texto> Hola </Texto>
-      <Texto> Mundo </Texto>
-      <Texto> React Native </Texto>
-      <Button title='Presionar'></Button>
+      <Texto> </Texto>
+      <Texto> </Texto>
+      <Texto> </Texto>
+      <Button  title='Presionar'></Button>
       <StatusBar style='auto'/>
 
     </View>
