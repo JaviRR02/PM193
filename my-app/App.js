@@ -12,13 +12,13 @@ const Texto = ({style}) => {
   )
 }
 
-const Boton = () => {
-  const [texto,setTexto]=useState('Presionar');
-  const cambiarTexto=()=>{setTexto('Presionado')};
-  return (
-    <Button onPress={cambiarTexto} title={texto}></Button>
-  )
-}
+// const Boton = () => {
+//   const [texto,setTexto]=useState('Presionar');
+//   const cambiarTexto=()=>{setTexto('Presionado')};
+//   return (
+//     <Button onPress={cambiarTexto} title={texto}></Button>
+//   )
+// }
 
 
 export default function App() {
@@ -28,7 +28,7 @@ export default function App() {
       <Texto style={styles.morado}> </Texto>
       <Texto style={styles.negro}> </Texto>
       <Texto style={styles.verde}> </Texto>
-      <Boton> </Boton>
+      {/* <Boton> </Boton> */}
       <StatusBar style='auto'/>
 
     </View>
@@ -41,18 +41,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    //flexDirection: 'column-reverse'
+    //flexDirection: 'row-reverse'
   },
   Text: {
     color: 'white',
     fontSize: 27,
+    height: 120,
+    width: 120,
   },
   morado: {
-    backgroundColor: 'purple'
+    backgroundColor: 'purple',
+    flex:3
   },
   verde: {
-    backgroundColor: 'green'
+    backgroundColor: 'green',
+    flex:1
   },
   negro: {
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    flex:2
   },
 });
