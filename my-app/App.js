@@ -4,11 +4,11 @@ import React, {useState} from 'react';
 
 
 //componente Propio Texto
-const Texto = () => {
+const Texto = ({style}) => {
   const[contenido,setContenido]=useState('Hola Mundo');
   const actualizaTexto=()=>{setContenido('Estado Modificado')};
   return(
-    <Text style={styles.Text} onPress={actualizaTexto}> {contenido} </Text>
+    <Text style={[styles.Text, style]} onPress={actualizaTexto}> {contenido} </Text>
   )
 }
 
@@ -25,9 +25,9 @@ export default function App() {
   return (
     <View style={styles.container}>
 
-      <Texto> </Texto>
-      <Texto> </Texto>
-      <Texto> </Texto>
+      <Texto style={styles.morado}> </Texto>
+      <Texto style={styles.negro}> </Texto>
+      <Texto style={styles.verde}> </Texto>
       <Boton> </Boton>
       <StatusBar style='auto'/>
 
@@ -43,7 +43,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Text: {
-    color: 'blue',
+    color: 'white',
     fontSize: 27,
-  }
+  },
+  morado: {
+    backgroundColor: 'purple'
+  },
+  verde: {
+    backgroundColor: 'green'
+  },
+  negro: {
+    backgroundColor: 'black'
+  },
 });
