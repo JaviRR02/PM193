@@ -39,27 +39,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'strech', //acomodo izq der (flex-start, flex-end, center) (space-between, space-everly, space-around) (strech)
+    justifyContent: 'space-around', //acomodo arriba abajo (flex-start, flex-end, center) (space-between, space-everly, space-around)
     //flexDirection: 'column-reverse'
     //flexDirection: 'row-reverse'
   },
   Text: {
     color: 'white',
     fontSize: 27,
-    height: 120,
-    width: 120,
+    // height: 120,
+    // width: 120,
   },
   morado: {
     backgroundColor: 'purple',
-    flex:3
+    //flex:3
   },
   verde: {
     backgroundColor: 'green',
-    flex:1
+    //flex:1
   },
   negro: {
     backgroundColor: 'black',
-    flex:2
+    //flex:2
   },
 });
