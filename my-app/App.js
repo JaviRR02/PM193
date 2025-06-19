@@ -3,65 +3,44 @@ import { StyleSheet, Text, View, Button, Alert, ScrollView,
         TouchableOpacity, TouchableHighlight, TouchableNativeFeedback, 
         Pressable, Switch } from 'react-native';
 import React, {useState} from 'react';
-
-
-//componente Propio Texto
-const Texto = ({style}) => {
-  const[contenido,setContenido]=useState('Hola Mundo');
-  const actualizaTexto=()=>{setContenido('Estado Modificado')};
-  return(
-    <Text style={[styles.Text, style]} onPress={actualizaTexto}> {contenido} </Text>
-  )
-}
-
-// const Boton = () => {
-//   const [texto,setTexto]=useState('Presionar');
-//   const cambiarTexto=()=>{setTexto('Presionado')};
-//   return (
-//     <Button onPress={cambiarTexto} title={texto}></Button>
-//   )
-// }
-
+import { Button as ButonPaper, Provider as ProveedorPaper } from 'react-native-paper';
+import { Button as ButonElements } from 'react-native-elements';
 
 export default function App() {
+  const [modoOscuro, setModoOscuro] = useState(false);
+  const alternarModoOscuro = () => setModoOscuro(previo => !previo);
+
   return (
-    <View style={styles.container}>
-
-      <Texto style={styles.morado}> </Texto>
-      <Texto style={styles.negro}> </Texto>
-      <Texto style={styles.verde}> </Texto>
-      {/* <Boton> </Boton> */}
-      <StatusBar style='auto'/>
-
-    </View>
+    <ProveedorPaper>
+      <ScrollView contentContainerStyle={styles.ScrollContainer}>
+        <View style={[styles.container, {backgroundColor: modoOscuro ? '#111' : '#fff'}]}></View>
+        <View styles={styles.container}>
+            <Text styles={styles.title}>Modo de pantalla: {modoOscuro ? 'oscuro' : 'claro'}</Text>
+            <Switch value={modoOscuro} onValueChange={alternarModoOscuro}></Switch>  
+        </View>
+      </ScrollView>
+    </ProveedorPaper>
+    
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'strech', //acomodo izq der (flex-start, flex-end, center) (space-between, space-everly, space-around) (strech)
-    justifyContent: 'space-around', //acomodo arriba abajo (flex-start, flex-end, center) (space-between, space-everly, space-around)
-    //flexDirection: 'column-reverse'
-    //flexDirection: 'row-reverse'
+    alignItems: 'center', 
+    paddingHorizontal: 20,
+    paddingBottom: 50,
+    justifyContent: 'center',
   },
-  Text: {
-    color: 'white',
-    fontSize: 27,
-    // height: 120,+
-    // width: 120,
+  title: {
+    fontSize: 16,
+    marginVertical: 6,
+    textAlign: 'center',
+    color:'#000',
   },
-  morado: {
-    backgroundColor: 'purple',
-    //flex:3
-  },
-  verde: {
-    backgroundColor: 'green',
-    //flex:1
-  },
-  negro: {
-    backgroundColor: 'black',
-    //flex:2
+  section:{
+    marginVertical: 15,
+    alignItems: 'center',
+    width: '100%',
   },
 });
