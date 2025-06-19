@@ -1,5 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ScrollView, 
+        TouchableOpacity, TouchableHighlight, TouchableNativeFeedback, 
+        Pressable, Switch } from 'react-native';
 import React, {useState} from 'react';
 
 
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   Text: {
     color: 'white',
     fontSize: 27,
-    // height: 120,
+    // height: 120,+
     // width: 120,
   },
   morado: {
