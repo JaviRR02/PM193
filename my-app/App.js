@@ -13,7 +13,8 @@ export default function App() {
   return (
     <ProveedorPaper>
       <ScrollView contentContainerStyle={styles.ScrollContainer}>
-        <View style={[styles.container, { backgroundColor: modoOscuro ? '#111' : '#fff' }]}>
+        <View style={[styles.container, { backgroundColor: modoOscuro ? '#111' : '#fff' }]}></View>
+        <View style={styles.section}>
           <Text style={styles.title}>Modo de pantalla: {modoOscuro ? 'oscuro' : 'claro'}</Text>
           <Switch value={modoOscuro} onValueChange={alternarModoOscuro} />
         </View>
