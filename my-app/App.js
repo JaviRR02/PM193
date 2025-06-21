@@ -24,7 +24,7 @@ export default function App() {
           <Button
             title="Botón Nativo"
             color="#007bff"
-            onPress={() => Alert.alert('Botón Nativo Presionado')}
+            onPress={() => window.alert('Botón Nativo Presionado')}
           />
         </View>
 
@@ -33,7 +33,7 @@ export default function App() {
           <Text style={styles.title}>Segundo Botón</Text>
           <TouchableOpacity
             style={[styles.btn, { backgroundColor: '#28a745' }]}
-            onPress={() => Alert.alert('TouchableOpacity')}
+            onPress={() => window.alert('TouchableOpacity')}
           >
             <Text style={styles.btnText}>TouchableOpacity</Text>
           </TouchableOpacity>
@@ -45,7 +45,7 @@ export default function App() {
           <TouchableHighlight
             style={[styles.btn, { backgroundColor: '#ffc107' }]}
             underlayColor="#e0a800"
-            onPress={() => Alert.alert('Botón 3')}
+            onPress={() => window.alert('Botón 3')}
           >
             <Text style={styles.btnText}>TouchableHighlight</Text>
           </TouchableHighlight>
@@ -54,7 +54,7 @@ export default function App() {
         {/* Botón 4 */}
         <View style={styles.section}>
           <Text style={styles.title}>4. TouchableWithoutFeedback: sin retroalimentación visual</Text>
-          <TouchableWithoutFeedback onPress={() => Alert.alert('¡Sin retroalimentación visual!')}>
+          <TouchableWithoutFeedback onPress={() => window.alert('¡Sin retroalimentación visual!')}>
             <View style={[styles.btn, { backgroundColor: '#17a2b8' }]}>
               <Text style={styles.btnText}>Sin retroalimentación</Text>
             </View>
@@ -69,7 +69,7 @@ export default function App() {
               styles.btn,
               { backgroundColor: pressed ? '#6c757d' : '#343a40' },
             ]}
-            onPress={() => Alert.alert('¡Presionaste Pressable!')}
+            onPress={() => window.alert('¡Presionaste Pressable!')}
           >
             <Text style={styles.btnText}>Pressable</Text>
           </Pressable>
@@ -82,7 +82,7 @@ export default function App() {
             mode="contained"
             buttonColor="#9c27b0"
             textColor="#fff"
-            onPress={() => Alert.alert('¡Presionaste el botón de Paper!')}
+            onPress={() => window.alert('¡Presionaste el botón de Paper!')}
             style={styles.paperButton}
           >
             Botón de Papel
@@ -94,7 +94,7 @@ export default function App() {
           <Text style={styles.title}>7. Botón de Elements: con iconos y estilos</Text>
           <ButtonElements
             title="Botón Elements"
-            onPress={() => Alert.alert('¡Presionaste el botón de Elements!')}
+            onPress={() => window.alert('¡Presionaste el botón de Elements!')}
             buttonStyle={{
               backgroundColor: '#ff5722',
               borderRadius: 10,
