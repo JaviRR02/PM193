@@ -29,11 +29,23 @@ export default function App() {
     }
   };
 
+  const AlertConfirmacion = () => {
+    const confirmacion = window.prompt('Que edad tienes?');
+    const numero = parseInt(confirmacion);
+    if (numero >= 1 && numero <= 70) {
+      window.alert(`Tu edad es, ${numero}`);
+    }
+    else {
+      window.alert('Edad incorrecta, como fallas en esto?');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Button title='Alerta basica' onPress={AlertaBasica}></Button>
       <Button title='Alerta confirmacion' onPress={AlertaConfirmacion}></Button>
       <Button title='Alerta texto' onPress={AlertaTexto}></Button>
+      <Button title='Alerta edad' onPress={AlertConfirmacion}></Button>
     </View>
     )
 };
