@@ -6,6 +6,12 @@ import React, { useState } from 'react';
 
 /* Zona 2: Main */
 export default function App() {
+  const [emailText, setEmailText] = useState('');
+
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone) => /^[0-9]{7-15}$/.test(phone);
+
+
   const AlertaBasica = () => {
     window.alert('Hola, soy una alerta básica');
   };
