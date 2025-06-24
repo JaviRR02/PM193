@@ -9,9 +9,18 @@ export default function App() {
   const AlertaBasica = () => {
     window.alert('Hola, soy una alerta básica');
   };
+  const AlertaConfirmacion = () => {
+    const confirmacion = window.confirm('Gus es Gustambo?');
+    if (confirmacion) {
+      window.alert('Exactamente');
+    } else {
+      window.alert('Como que no!');
+    }
+  }
   return (
     <View style={styles.container}>
       <Button title='Alerta basica' onPress={AlertaBasica}></Button>
+      <Button title='Alerta confirmacion' onPress={AlertaConfirmacion}></Button>
     </View>
   );
 }
