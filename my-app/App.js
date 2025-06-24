@@ -9,6 +9,7 @@ export default function App() {
   const AlertaBasica = () => {
     window.alert('Hola, soy una alerta básica');
   };
+
   const AlertaConfirmacion = () => {
     const confirmacion = window.confirm('Gus es Gustambo?');
     if (confirmacion) {
@@ -16,14 +17,26 @@ export default function App() {
     } else {
       window.alert('Como que no!');
     }
-  }
+  };
+
+  const AlertaTexto = () => {
+    const confirmacion = window.confirm('Erick esta aqui?');
+    if (confirmacion) {
+      window.alert(`Exactamente, ${confirmacion}`);
+    }
+    else {
+      window.alert('Como que no!');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Button title='Alerta basica' onPress={AlertaBasica}></Button>
       <Button title='Alerta confirmacion' onPress={AlertaConfirmacion}></Button>
+      <Button title='Alerta texto' onPress={AlertaTexto}></Button>
     </View>
-  );
-}
+    )
+};
 
 /* Zona 3: Estilos */ 
 const styles = StyleSheet.create({
