@@ -40,12 +40,19 @@ export default function App() {
     }
   };
 
+  const AlertaTiempo = () => {
+    setTimeout(() => {
+      window.alert('Han pasado 5 segundos');
+    }, 5000);
+  };
+
   return (
     <View style={styles.container}>
       <Button title='Alerta basica' onPress={AlertaBasica}></Button>
       <Button title='Alerta confirmacion' onPress={AlertaConfirmacion}></Button>
       <Button title='Alerta texto' onPress={AlertaTexto}></Button>
       <Button title='Alerta edad' onPress={AlertConfirmacion}></Button>
+      <Button title='Alerta tiempo' onPress={AlertaTiempo}></Button>
     </View>
     )
 };
