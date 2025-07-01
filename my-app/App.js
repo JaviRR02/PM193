@@ -1,24 +1,60 @@
-import React, { useEffect, useState} from 'react';
-import { View, StatusBar } from 'react-native';
-import SplashScreen from './src/screens/SplashScreen';
-import HomeScreen from './src/screens/HomeScreen';
+import { ScrollView, StatusBar, StyleSheet, Text } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import React, { useRef } from "react";
 
-export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
-
-    return () => clearTimeout(timer); 
-  }, []);
+const App = () => {
+  const ScrollViewRef = useRef(null);
+  const handleScrollTo = () => {
+    if (ScrollViewRef.current) {
+      ScrollViewRef.current.scrollTo({x:200,y:200, animated:true});
+    }
+  };
 
   return (
-    <View style={{ flex: 1}}>
-      <StatusBar hidden/>
-      {isLoading ? <SplashScreen/> : <HomeScreen/>}
-    </View>
-  );
-}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <ScrollView style={styles.ScrollView} horizontal>
+          <Text style={styles.text}>
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+            Este es el texto que utilizara todo el espacio
+          </Text>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  )
+};
 
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+    paddingTop: StatusBar.currentHeight,
+
+  },
+  ScrollView: {
+    backgroundColor: 'green',
+  },
+  text: {
+    fontSize: 50,
+    padding: 20,
+  }
+});
+
+export default App;
