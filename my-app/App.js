@@ -1,66 +1,141 @@
-// Importamos react y sus funciones para manejar estados y ejecutar código cuando
-// la app cargue 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  ScrollView,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import axios from 'axios';
 
-// Importamos componentes de react native para mostrar la interfaz, listas y estilos
-import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
-
-//Creamos el componente principal App y usamos un estado "personas" que está vacío
 export default function App() {
-  const [personas, setPersonas] = useState([]); //Con setPersona actualizamos y obtenemos el backend
+  const [comida, setComida] = useState('');
+  const [ciudad, setCiudad] = useState('');
+  const [restaurantes, setRestaurantes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  //Se ejecuta una vez cuando la app carga
-  useEffect(() => {
-    fetch('http://localhost:8000/nombres') //llamamos el endpoint
-      .then(res => res.json()) //si la respuesta llega correcta entonces
-      .then(data => setPersonas(data)) // guardamos los datos en setPersonas
-      .catch(err => console.error(err)); //sino muestra el error
-  }, []);
+  const buscarRestaurantes = async () => {
+    if (!ciudad) {
+      Alert.alert('Error', 'Por favor ingresa una ciudad.');
+      return;
+    }
 
-  // Datos para FlatList: mostramos solo nombres
-  // Usamos map para ir trayendo los datos y transformarlos en un nuevo arreglo
-  const flatData = personas.map((p, index) => ({
-    key: index.toString(), //convierte el número a texto
-    nombre: p.Nombre, //traemos solo el nombre de p que es personas
-    apellido: p.Apellido
-  }));
+    setLoading(true);
+    setRestaurantes([]);
 
-  // Datos para SectionList: agrupado por Apellido
-  const sectionData = personas.map((p) => ({
-    title: p.Apellido, //aqui traemos de acuerdo a una sección específica, osea apellidos
-    data: [p.Nombre] // traemos también el nombre pero solo como extra
-  }));
+    try {
+      // Obtener coordenadas de la ciudad desde Nominatim
+      const nominatimUrl = `https://nominatim.openstreetmap.org/search`;
+      const locationRes = await axios.get(nominatimUrl, {
+        params: {
+          q: ciudad,
+          format: 'json',
+          limit: 1,
+        },
+        headers: {
+          'Accept-Language': 'en',
+          'User-Agent': 'ReactNativeApp/1.0',
+        },
+      });
 
-  // Renderizamos la interfaz de usuario
+      if (!locationRes.data.length) {
+        throw new Error('Ciudad no encontrada');
+      }
+
+      const { lat, lon } = locationRes.data[0];
+
+      // Construir la consulta de Overpass
+      const overpassQuery = `
+        [out:json][timeout:25];
+        (
+          node["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
+          way["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
+          relation["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
+        );
+        out center;
+      `;
+
+      const overpassUrl = `https://overpass-api.de/api/interpreter`;
+      const overpassRes = await axios.post(overpassUrl, overpassQuery, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
+
+      if (!overpassRes.data.elements.length) {
+        Alert.alert('Sin resultados', 'No se encontraron restaurantes para esa búsqueda.');
+        setLoading(false);
+        return;
+      }
+
+      setRestaurantes(overpassRes.data.elements);
+    } catch (err) {
+      console.error(err.message);
+      Alert.alert('Error', 'No se pudo realizar la búsqueda. Intenta de nuevo.');
+    }
+
+    setLoading(false);
+  };
+
   return (
-
-    //Esto es para flatlist
     <View style={styles.container}>
-      <Text style={styles.title}>FlatList - Solo Nombres</Text>
-      <FlatList 
-        data={flatData} //por cada dato, que se cree un texto
-        renderItem={({ item }) => <Text style={styles.item}>{item.apellido} {item.nombre}</Text>}
-        keyExtractor={item => item.key}
+      <Text style={styles.title}>🍽️ Buscador de Restaurantes</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Tipo de comida (opcional)"
+        value={comida}
+        onChangeText={setComida}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Ciudad"
+        value={ciudad}
+        onChangeText={setCiudad}
+      />
+      <Button title="Buscar" onPress={buscarRestaurantes} color="#1e90ff" />
 
-      {/* Esto es para SectionList */}
-      <Text style={styles.title}>SectionList - Agrupado por Apellido</Text> {/* Muestra el título */}
-      <SectionList
-        sections={sectionData} /* Se pasan los datos a mostrar en la SectionList */
-        keyExtractor={(item, index) => item + index} /* Se identifica de manera unica el item, Andrea0, Carol1 */
-        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>} /* defino cada elemento de una sección (nombres)*/
-        renderSectionHeader={({ section: { title } }) => ( /* defino como mostrar cada seccion (apellidos) */
-          <Text style={styles.header}>{title}</Text> 
-        )}
-      />
+      {loading && <ActivityIndicator size="large" color="#1e90ff" style={{ marginTop: 20 }} />}
+
+      <ScrollView style={{ marginTop: 20 }}>
+        {restaurantes.map((r, i) => (
+          <View key={i} style={styles.card}>
+            <Text style={styles.name}>{r.tags.name || 'Sin nombre'}</Text>
+            <Text>🍴 Comida: {r.tags.cuisine || 'Desconocida'}</Text>
+            <Text>📍 Dirección: {r.tags['addr:full'] || r.tags['addr:street'] || 'No disponible'}</Text>
+            <Text>🌐 Coordenadas: {r.lat?.toFixed(4) || r.center?.lat?.toFixed(4)}, {r.lon?.toFixed(4) || r.center?.lon?.toFixed(4)}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
 
-// Son los estilos que le dare a la interfaz
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50, paddingHorizontal: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-  item: { padding: 10, fontSize: 16 },
-  header: { fontSize: 18, fontWeight: 'bold', backgroundColor: '#ddd', padding: 5 },
+  container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#fefefe' },
+  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  card: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    shadowColor: '#aaa',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  name: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
 });
