@@ -1,141 +1,92 @@
+// Importamos React para poder usar JSX y crear componentes funcionales
+// useState es un "hook" que nos permite manejar el estado de los componentes (si algo se muestra o no)
 import React, { useState } from 'react';
+
+// Importamos componentes de la librería 'react-native' que usaremos en la interfaz
 import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  ScrollView,
-  ActivityIndicator,
-  StyleSheet,
-  Alert,
+  Modal,        // Componente que permite mostrar una ventana emergente (como un popup)
+  View,         // Contenedor visual, como un div en HTML
+  Text,         // Para mostrar textos en pantalla
+  StyleSheet,   // Herramienta para crear estilos de forma organizada
+  Button,       // Botón básico que ya viene con diseño
+  Pressable     // Botón más flexible y personalizable en diseño
 } from 'react-native';
-import axios from 'axios';
-
+// Creamos el componente principal de la app, que será exportado para mostrarse en pantalla
 export default function App() {
-  const [comida, setComida] = useState('');
-  const [ciudad, setCiudad] = useState('');
-  const [restaurantes, setRestaurantes] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const buscarRestaurantes = async () => {
-    if (!ciudad) {
-      Alert.alert('Error', 'Por favor ingresa una ciudad.');
-      return;
-    }
-
-    setLoading(true);
-    setRestaurantes([]);
-
-    try {
-      // Obtener coordenadas de la ciudad desde Nominatim
-      const nominatimUrl = `https://nominatim.openstreetmap.org/search`;
-      const locationRes = await axios.get(nominatimUrl, {
-        params: {
-          q: ciudad,
-          format: 'json',
-          limit: 1,
-        },
-        headers: {
-          'Accept-Language': 'en',
-          'User-Agent': 'ReactNativeApp/1.0',
-        },
-      });
-
-      if (!locationRes.data.length) {
-        throw new Error('Ciudad no encontrada');
-      }
-
-      const { lat, lon } = locationRes.data[0];
-
-      // Construir la consulta de Overpass
-      const overpassQuery = `
-        [out:json][timeout:25];
-        (
-          node["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
-          way["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
-          relation["amenity"="restaurant"${comida ? `]["cuisine"~"${comida}",i` : ''}](around:5000,${lat},${lon});
-        );
-        out center;
-      `;
-
-      const overpassUrl = `https://overpass-api.de/api/interpreter`;
-      const overpassRes = await axios.post(overpassUrl, overpassQuery, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
-
-      if (!overpassRes.data.elements.length) {
-        Alert.alert('Sin resultados', 'No se encontraron restaurantes para esa búsqueda.');
-        setLoading(false);
-        return;
-      }
-
-      setRestaurantes(overpassRes.data.elements);
-    } catch (err) {
-      console.error(err.message);
-      Alert.alert('Error', 'No se pudo realizar la búsqueda. Intenta de nuevo.');
-    }
-
-    setLoading(false);
+  // Definimos una variable de estado llamada modalVisible, que por defecto es "false"
+  // Esta variable sirve para saber si el modal está abierto (true) o cerrado (false)
+  const [modalVisible, setModalVisible] = useState(false);
+  // Esta función se ejecuta cuando queremos abrir el modal (al presionar el botón)
+  const handleOpenModal = () => {
+    setModalVisible(true); // Cambiamos el estado a "true", así el modal se mostrará
   };
 
+  // Esta función se ejecuta para cerrar el modal (cuando presionamos "Cerrar")
+  const handleCloseModal = () => {
+    setModalVisible(false); // Cambiamos el estado a "false", así el modal se ocultará
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🍽️ Buscador de Restaurantes</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo de comida (opcional)"
-        value={comida}
-        onChangeText={setComida}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Ciudad"
-        value={ciudad}
-        onChangeText={setCiudad}
-      />
-      <Button title="Buscar" onPress={buscarRestaurantes} color="#1e90ff" />
-
-      {loading && <ActivityIndicator size="large" color="#1e90ff" style={{ marginTop: 20 }} />}
-
-      <ScrollView style={{ marginTop: 20 }}>
-        {restaurantes.map((r, i) => (
-          <View key={i} style={styles.card}>
-            <Text style={styles.name}>{r.tags.name || 'Sin nombre'}</Text>
-            <Text>🍴 Comida: {r.tags.cuisine || 'Desconocida'}</Text>
-            <Text>📍 Dirección: {r.tags['addr:full'] || r.tags['addr:street'] || 'No disponible'}</Text>
-            <Text>🌐 Coordenadas: {r.lat?.toFixed(4) || r.center?.lat?.toFixed(4)}, {r.lon?.toFixed(4) || r.center?.lon?.toFixed(4)}</Text>
+      {/* Botón básico. Cuando se presiona, se ejecuta la función handleOpenModal */}
+      <Button title="Mostrar Modal" onPress={handleOpenModal} />
+      {/* Modal: ventana emergente que aparece encima del contenido */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={handleCloseModal}
+        onShow={() => console.log("Modal mostrado")}
+        onDismiss={() => console.log("Modal cerrado")}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>¡Este es el contenido del modal!</Text>
+            <Pressable style={styles.buttonClose} onPress={handleCloseModal}>
+              <Text style={styles.textStyle}>Cerrar</Text>
+            </Pressable>
           </View>
-        ))}
-      </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 }
 
+
+// Creamos un objeto con estilos usando StyleSheet.create
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#fefefe' },
-  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#fff',
+  container: {
+    flex: 1,                    // El contenedor ocupa toda la pantalla
+    justifyContent: 'center',  // Centrado vertical
+    alignItems: 'center',      // Centrado horizontal
   },
-  card: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    shadowColor: '#aaa',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 2,
+  centeredView: {
+    flex: 1,                                 // Ocupa todo el espacio disponible
+    justifyContent: 'center',               // Centra el contenido verticalmente
+    alignItems: 'center',                   // Centra el contenido horizontalmente
+    backgroundColor: 'rgba(0,0,0,0.5)',     // Fondo negro con transparencia (0.5)
   },
-  name: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
+  modalView: {
+    margin: 20,                  // Espacio entre el modal y el borde de la pantalla
+    backgroundColor: 'white',   // Fondo blanco
+    borderRadius: 20,           // Bordes redondeados
+    padding: 35,                // Espacio interno del cuadro
+    alignItems: 'center',       // Centra su contenido horizontalmente
+    elevation: 5,               // Sombra (solo para Android)
+  },
+  modalText: {
+    marginBottom: 15,           // Espacio debajo del texto
+    textAlign: 'center',        // Centrado
+    fontSize: 18,               // Tamaño de letra más grande
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3', // Azul
+    borderRadius: 10,           // Bordes redondeados
+    padding: 10,                // Espaciado interno del botón
+    elevation: 2,               // Sombra para que parezca elevado
+  },
+  textStyle: {
+    color: 'white',             // Texto blanco para que contraste con el azul
+    fontWeight: 'bold',         // Negrita
+    textAlign: 'center',        // Centrado horizontal
+  },
 });
